@@ -1,0 +1,89 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Index</h1>
+    <p>
+        Portfolio Summary
+    </p>
+    <form class="my-form">
+        <label>Api Key</label>
+        <input class="api-key" type="text" size="50" value="b6b576a9-010e-4e83-82a8-4d9c6d699b77">
+        <button type="submit">Get Portfolio</button>
+    </form>
+    <div class="portfolio">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Value</th>
+                    <th>Profit/Loss</th>
+                </tr>
+            </thead>
+            <tbody class="portfolio-table-body">
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+
+<script>
+var myApp = (function ($) {
+    var API_KEY = '';
+    var $mainView = $('.portfolio');
+    var $table = $mainView.find('.portfolio-table-body');
+
+    function loadPage(apiKey) {
+        API_KEY = apiKey;
+        getPortfolio().then(function (res) {
+            return res.json();
+        }).then(function (data) {
+            render(data);
+        });
+    }
+
+    function render(data) {
+        var rows = '';
+        for (var i in data.portfolio) {
+            var item = data.portfolio[i];
+            var stock = data.currentPrices[item.symbol]
+            var totalPrice = (stock.price * item.total_amount);
+            var profit = totalPrice + item.total_profit;
+
+            rows += `
+                <tr>
+                    <td>${item.symbol}</td>
+                    <td>${stock.description}</td>
+                    <td>${item.total_amount}</td>
+                    <td>${numeral(totalPrice).format('$0,0.00')}</td>
+                    <td>${numeral(profit).format('$0,0.00')}</td>
+                </tr>
+            `;
+        }
+        $table.html(rows);
+    }
+
+    function getPortfolio() {
+        return fetch('/api/v1/portfolio', {
+            method: 'GET',
+            headers: {
+                'x-api-key': API_KEY,
+                'Accept': 'application/json'
+            }
+        });
+    }
+
+    return loadPage;
+})($);
+
+$('.my-form').on('submit', function (e) {
+    e.preventDefault();
+
+    myApp($('.api-key').val());
+});
+</script>
+{% endblock %}

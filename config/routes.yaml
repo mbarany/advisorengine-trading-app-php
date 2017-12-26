@@ -1,0 +1,7 @@
+root:
+  path: /
+  defaults: { _controller: 'App\Controller\RootController::rootAction' }
+
+app_api_v1:
+  prefix: /api/v1
+  resource: routes/api_v1.yaml

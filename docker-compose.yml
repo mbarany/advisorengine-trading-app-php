@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    network_mode: bridge
+    links:
+      - postgres
+    volumes:
+      - .:/app
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80"
+    network_mode: bridge
+    links:
+      - app
+      - postgres
+    volumes:
+      - ./:/app
+      - ./_build/nginx/site.conf:/etc/nginx/conf.d/default.conf
+
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - "5432"
+    network_mode: bridge
+    env_file:
+      - ./postgres.env
