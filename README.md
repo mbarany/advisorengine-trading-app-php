@@ -8,7 +8,7 @@ docker-compose up -d
 # DB Migrations
 docker-compose exec app php bin/console doctrine:migrations:migrate
 # Load Data Fixtures
-docker-compose exec app php bin/console doctrine:fixtures:load
+docker-compose exec app php bin/console doctrine:fixtures:load --env=dev
 ```
 
 ## Create Stock Transactions
