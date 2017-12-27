@@ -5,6 +5,8 @@
 ```
 # Start App and DB
 docker-compose up -d
+# Composer Install
+docker-compose exec app composer install
 # DB Migrations
 docker-compose exec app php bin/console doctrine:migrations:migrate
 # Load Data Fixtures
@@ -19,7 +21,7 @@ curl --request POST \
   --header 'Accept: application/json' \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: b6b576a9-010e-4e83-82a8-4d9c6d699b77' \
-  --data '{\n	"symbol": "AAPL",\n	"amount": 2,\n	"date": "2017-12-21",\n	"type": "sell"\n}'
+  --data '{"symbol": "AAPL","amount": 2,"date": "2017-12-21","type": "buy"}'
 ```
 
 ## Get Portfolio
